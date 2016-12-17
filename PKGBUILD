@@ -44,6 +44,8 @@ package_libdrm-amdgpo() {
 package_opencl-amd() {
 	pkgdesc="OpenCL userspace driver as provided in the amdgpu-pro driver stack, modified to work along with the free amdgpu stack."
 	depends=("libdrm-amdgpo=${pkgver}-${pkgrel}")
+	optdepends=('opencl-headers: headers necessary for OpenCL development')
+	provides=('opencl-driver')
 
 	mkdir -p "${srcdir}/opencl"
 	cd "${srcdir}/opencl"
