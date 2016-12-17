@@ -1,6 +1,6 @@
 # Maintainer: grmat <grmat@sub.red>
 
-pkgname=(libdrm-amdgpo opencl-amd)
+pkgname=(libdrm-amdgpo opencl-amd vulkan-amd)
 pkgver=16.50.362463
 pkgrel=2
 arch=('x86_64')
@@ -57,4 +57,22 @@ package_opencl-amd() {
 	mkdir -p ${pkgdir}/usr/lib
 	cp "${srcdir}/opencl/${shared}/libamdocl64.so" "${pkgdir}/usr/lib/"
 	cp "${srcdir}/opencl/${shared}/libamdocl12cl64.so" "${pkgdir}/usr/lib/"
+}
+
+package_vulkan-amd() {
+	pkgdesc="Vulkan userspace driver as provided in the amdgpu-pro driver stack, modified to work along with the free amdgpu stack."
+	depends=("libdrm-amdgpo=${pkgver}-${pkgrel}")
+	provides=('vulkan-driver')
+
+	mkdir -p "${srcdir}/vulkan"
+	cd "${srcdir}/vulkan"
+	ar x "${srcdir}/${prefix}${major}-${minor}/vulkan-amdgpu-pro_${major}-${minor}_amd64.deb"
+	tar xJf data.tar.xz
+	cd ${shared}
+	sed -i "s|libdrm_amdgpu|libdrm_amdgpo|g" amdvlk64.so
+	cd "${srcdir}/vulkan/etc/vulkan/icd.d"
+	sed -i "s|opt/amdgpu-pro/lib/x86_64-linux-gnu|usr/lib|g" amd_icd64.json
+	mv "${srcdir}/vulkan/etc" "${pkgdir}/"
+	mkdir -p ${pkgdir}/usr/lib
+	cp "${srcdir}/vulkan/${shared}/amdvlk64.so" "${pkgdir}/usr/lib/"
 }
