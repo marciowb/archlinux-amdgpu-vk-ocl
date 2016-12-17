@@ -1,9 +1,8 @@
 # Maintainer: grmat <grmat@sub.red>
 
-pkgname=opencl-amd
-pkgdesc="OpenCL userspace driver as provided in the amdgpu-pro driver stack. This package is intended to work along with the free amdgpu stack."
+pkgname=(libdrm-amdgpo opencl-amd)
 pkgver=16.50.362463
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url='http://www.amd.com'
 license=('custom:AMD')
@@ -26,13 +25,8 @@ pkgver() {
 	echo "${major}.${minor}"
 }
 
-build() {
-	mkdir "${srcdir}/opencl"
-	cd "${srcdir}/opencl"
-	ar x "${srcdir}/${prefix}${major}-${minor}/opencl-amdgpu-pro-icd_${major}-${minor}_amd64.deb"
-	tar xJf data.tar.xz
-	cd ${shared}
-	sed -i "s|libdrm_amdgpu|libdrm_amdgpo|g" libamdocl64.so
+package_libdrm-amdgpo() {
+	pkgdesc="libdrm interface as provided in the amdgpu-pro driver stack, modified to work along with the free amdgpu stack."
 
 	mkdir "${srcdir}/libdrm"
 	cd "${srcdir}/libdrm"
@@ -42,14 +36,23 @@ build() {
 	rm "libdrm_amdgpu.so.1"
 	mv "libdrm_amdgpu.so.1.0.0" "libdrm_amdgpo.so.1.0.0"
 	ln -s "libdrm_amdgpo.so.1.0.0" "libdrm_amdgpo.so.1"
+	mkdir -p ${pkgdir}/usr/lib
+	cp "${srcdir}/libdrm/${shared}/libdrm_amdgpo.so.1.0.0" "${pkgdir}/usr/lib/"
+	cp "${srcdir}/libdrm/${shared}/libdrm_amdgpo.so.1" "${pkgdir}/usr/lib/"
 }
 
-package() {
+package_opencl-amd() {
+	pkgdesc="OpenCL userspace driver as provided in the amdgpu-pro driver stack, modified to work along with the free amdgpu stack."
+	depends=("libdrm-amdgpo=${pkgver}-${pkgrel}")
+
+	mkdir -p "${srcdir}/opencl"
+	cd "${srcdir}/opencl"
+	ar x "${srcdir}/${prefix}${major}-${minor}/opencl-amdgpu-pro-icd_${major}-${minor}_amd64.deb"
+	tar xJf data.tar.xz
+	cd ${shared}
+	sed -i "s|libdrm_amdgpu|libdrm_amdgpo|g" libamdocl64.so
 	mv "${srcdir}/opencl/etc" "${pkgdir}/"
 	mkdir -p ${pkgdir}/usr/lib
-	mv "${srcdir}/opencl/${shared}/libamdocl64.so" "${pkgdir}/usr/lib/"
-	mv "${srcdir}/opencl/${shared}/libamdocl12cl64.so" "${pkgdir}/usr/lib/"
-	mv "${srcdir}/libdrm/${shared}/libdrm_amdgpo.so.1.0.0" "${pkgdir}/usr/lib/"
-	mv "${srcdir}/libdrm/${shared}/libdrm_amdgpo.so.1" "${pkgdir}/usr/lib/"
+	cp "${srcdir}/opencl/${shared}/libamdocl64.so" "${pkgdir}/usr/lib/"
+	cp "${srcdir}/opencl/${shared}/libamdocl12cl64.so" "${pkgdir}/usr/lib/"
 }
-
