@@ -1,20 +1,17 @@
-# amdgpocl
-OpenCL on amdgpu for Arch, also in the [AUR](https://aur.archlinux.org/packages/opencl-amd/)
+# OpenCL and Vulkan on amdgpu for Arch
 
-This package allows the usage of AMD's proprietary user-space OpenCL driver along with the free amdgpu stack. It should work with upstream amdgpu and Mesa. Inspired by [this blog post](http://www.gearsongallium.com/?p=2960).
+This package allows the usage of AMD's proprietary user-space OpenCL and Vulkan drivers along with the free amdgpu stack. This includes Linux 4.10 and newer, libdrm (requires patching as of 2.4.74) and Mesa drivers.
 
 ## Hardware support
 
-This *should* work with all amdgpu-enabled GCN GPUs. However, I have no hardware to actually test it.
+This *should* work with all amdgpu-enabled GCN GPUs.
 
-If you are using CIK (Sea Islands GPU), you'll need a custom kernel. Check the [aur](https://aur.archlinux.org/packages/linux-cik/) or compile your own.
-
-Currently tested with Kernel 4.8.6 and Hawaii. Blender Cycles and Luxmark seem to work without any problems.
+Currently tested with Kernel 4.10-RC2 on Hawaii and Fiji. Blender Cycles and Luxmark seem to work without any problems. The Vulkan drivers is able to run Doom 2016.
 
 ## What this is not
 
-You are not getting Vulkan support, faster 3D rendering or unicorns.
+You are not getting faster OpenGL rendering or unicorns.
 
 If you are looking for the full amdgpu-pro stack, including proprietary OpenGL and Vulkan implementations, move over to the [aur](https://aur.archlinux.org/pkgbase/amdgpu-pro-installer/).
 
-Expect maintainance of this package to be dropped when there is free OpenCL support on top of the [ROC](https://radeonopencompute.github.io/) stack.
+Expect maintainance of this package to be dropped when there is free OpenCL and Vulkan support on top of the [ROC](https://radeonopencompute.github.io/) stack.
