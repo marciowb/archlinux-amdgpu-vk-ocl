@@ -2,7 +2,7 @@
 
 pkgname=(opencl-amd vulkan-amd)
 pkgver=16.60.379184
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url='http://www.amd.com'
 license=('custom:AMD')
@@ -54,7 +54,8 @@ package_vulkan-amd() {
 	cd ${shared}
 	cd "${srcdir}/vulkan/etc/vulkan/icd.d"
 	sed -i "s|opt/amdgpu-pro/lib/x86_64-linux-gnu|usr/lib|g" amd_icd64.json
-	mv "${srcdir}/vulkan/etc" "${pkgdir}/"
+	mkdir -p ${pkgdir}/usr/share
+	mv "${srcdir}/vulkan/etc/vulkan" "${pkgdir}/usr/share/"
 	mkdir -p ${pkgdir}/usr/lib
 	cp "${srcdir}/vulkan/${shared}/amdvlk64.so" "${pkgdir}/usr/lib/"
 }
